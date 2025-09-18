@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trivia de Digitalización</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-xl">
+    <h1 class="text-2xl font-bold text-center mb-6">🎮 Trivia: Misión Digitalización Segura</h1>
+    <div id="quiz-container"></div>
+    <button id="next-btn" class="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hidden">Siguiente</button>
+    <div id="result" class="text-center mt-6 text-lg font-semibold hidden"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "¿Cuál de estas acciones NO hace parte del alistamiento?",
+        answers: [
+          { text: "Quitar dobleces del papel", correct: false },
+          { text: "Eliminar material metálico", correct: false },
+          { text: "Escanear el documento directamente sin revisión", correct: true },
+          { text: "Hacer descontaminación biológica si es necesario", correct: false }
+        ]
+      },
+      {
+        question: "Un documento manuscrito en buen estado debe digitalizarse en:",
+        answers: [
+          { text: "150 dpi en blanco y negro", correct: false },
+          { text: "300 dpi en escala de grises", correct: true },
+          { text: "600 dpi en PDF con pérdida", correct: false },
+          { text: "72 dpi para ahorrar espacio", correct: false }
+        ]
+      },
+      {
+        question: "¿Cuál de estas condiciones es aceptable en una imagen digitalizada?",
+        answers: [
+          { text: "Imagen torcida pero legible", correct: false },
+          { text: "Texto con sombras borrosas", correct: false },
+          { text: "Tamaño exacto al 100% respecto al documento original", correct: true },
+          { text: "Puntos o manchas generados por el escáner", correct: false }
+        ]
+      },
+      {
+        question: "Para preservación el formato recomendado es:",
+        answers: [
+          { text: "PDF/A", correct: false },
+          { text: "TIFF o JPEG2000 sin pérdida", correct: true },
+          { text: "JPG con compresión", correct: false },
+          { text: "PNG", correct: false }
+        ]
+      },
+      {
+        question: "¿Cuántos metadatos descriptivos deben incluirse como mínimo en el proceso?",
+        answers: [
+          { text: "1", correct: false },
+          { text: "Entre 2 y 10", correct: true },
+          { text: "15 obligatorios siempre", correct: false },
+          { text: "Ninguno, son opcionales", correct: false }
+        ]
+      }
+    ];
+
+    const quizContainer = document.getElementById("quiz-container");
+    const nextBtn = document.getElementById("next-btn");
+    const result = document.getElementById("result");
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function showQuestion() {
+      resetState();
+      let currentQuestion = questions[currentQuestionIndex];
+      let questionElement = document.createElement("h2");
+      questionElement.className = "text-lg font-semibold mb-4";
+      questionElement.innerText = currentQuestion.question;
+      quizContainer.appendChild(questionElement);
+
+      currentQuestion.answers.forEach(answer => {
+        let button = document.createElement("button");
+        button.innerText = answer.text;
+        button.className = "block w-full bg-gray-200 hover:bg-gray-300 text-left py-2 px-4 rounded-lg mb-2";
+        button.addEventListener("click", () => selectAnswer(button, answer.correct));
+        quizContainer.appendChild(button);
+      });
+    }
+
+    function resetState() {
+      quizContainer.innerHTML = "";
+      nextBtn.classList.add("hidden");
+    }
+
+    function selectAnswer(button, correct) {
+      if (correct) {
+        button.classList.remove("bg-gray-200");
+        button.classList.add("bg-green-400");
+        score++;
+      } else {
+        button.classList.remove("bg-gray-200");
+        button.classList.add("bg-red-400");
+      }
+
+      Array.from(quizContainer.children).forEach(child => {
+        if (child.tagName === "BUTTON") {
+          child.disabled = true;
+        }
+      });
+
+      nextBtn.classList.remove("hidden");
+    }
+
+    function showResult() {
+      resetState();
+      result.innerText = `✅ Has terminado. Tu puntaje es ${score} de ${questions.length}.`;
+      result.classList.remove("hidden");
+    }
+
+    nextBtn.addEventListener("click", () => {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    });
+
+    showQuestion();
+  </script>
+</body>
+</html>
